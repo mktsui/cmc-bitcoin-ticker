@@ -1,0 +1,12 @@
+<resources>
+
+    <!-- Peter: Important to use "MaterialComponents" theme when using the latest material components!
+         https://github.com/material-components/material-components-android/issues/298
+     -->
+    <style name="CMC.AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+</resources>

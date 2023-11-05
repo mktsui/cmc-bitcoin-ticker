@@ -1,6 +1,6 @@
 package au.cmcmarkets.ticker.data.api
 
-import au.cmcmarkets.ticker.data.model.MarketValue
+import au.cmcmarkets.ticker.data.model.MarketPrice
 import retrofit2.http.GET
 import javax.inject.Singleton
 
@@ -8,6 +8,6 @@ import javax.inject.Singleton
 interface BitcoinApi {
 
     @GET("ticker")
-    suspend fun getMarketValue(): Map<String, MarketValue>
+    suspend fun getMarketValue(): Map<String, MarketPrice>
 
 }

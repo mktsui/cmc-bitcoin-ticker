@@ -1,6 +1,7 @@
 package au.cmcmarkets.ticker.core.di.module
 
 import au.cmcmarkets.ticker.data.api.BitcoinApi
+import au.cmcmarkets.ticker.utils.AppConstant
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -15,8 +16,7 @@ import javax.inject.Singleton
 class NetworkModule {
 
     companion object {
-        //TODO("Update this to the base URL")
-        private const val API_BASE_URL = ""
+        private const val API_BASE_URL = AppConstant.API_BASE_URL
     }
 
     private val httpLoggingInterceptor: HttpLoggingInterceptor by lazy {

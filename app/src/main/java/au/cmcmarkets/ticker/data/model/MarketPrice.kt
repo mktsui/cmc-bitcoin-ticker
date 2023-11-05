@@ -3,7 +3,7 @@ package au.cmcmarkets.ticker.data.model
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
-data class MarketValue(
+data class MarketPrice(
     @SerializedName("15m")
     val delay15m: BigDecimal = BigDecimal.ZERO,
     @SerializedName("last")

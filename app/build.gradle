@@ -18,10 +18,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildFeatures {
-        viewBinding = true
-    }
-
     buildTypes {
         debug {
         }
@@ -66,8 +62,10 @@ dependencies {
     implementation "androidx.core:core-ktx:1.2.0"
 
     // Architecture components
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    kapt "androidx.lifecycle:lifecycle-compiler:2.2.0"
+//    implementation "androidx.lifecycle:lifecycle-extensions:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
+    kapt "androidx.lifecycle:lifecycle-compiler:2.4.0"
 
     // Kotlin & Coroutines
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.20"

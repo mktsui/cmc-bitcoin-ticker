@@ -23,6 +23,7 @@ class ViewModelFactory @Inject constructor(private val viewModels: Map<Class<out
         found ?: throw IllegalArgumentException("Unknown model class $modelClass")
 
         try {
+            @Suppress("UNCHECKED_CAST")
             return found.get() as T
         } catch (e: Exception) {
             throw RuntimeException(e)

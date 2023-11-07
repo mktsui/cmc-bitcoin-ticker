@@ -13,16 +13,7 @@ import javax.inject.Singleton
 
 @Singleton
 class BitcoinRepository @Inject constructor(private val bitcoinAPI: BitcoinApi){
-    fun getBitcoinMarketValue(): Flow<Response<Map<String, MarketPrice>>> = flow {
-        try {
-            emit(Response.Success(bitcoinAPI.getMarketValue()))
-        } catch (e: HttpException) {
-            emit(
-                Response.Error(errorMessage = "Server Error", data = null)
-            )
-        } catch (e: IOException) {
-            Response.Error(errorMessage = "Internet Error",data = null)
-        }
+    fun getBitcoinMarketValue(): Flow<Map<String, MarketPrice>> = flow {
+        emit(bitcoinAPI.getMarketValue())
     }
-
 }

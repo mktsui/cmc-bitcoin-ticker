@@ -2,7 +2,6 @@ package au.cmcmarkets.ticker.feature.orderticket
 
 import android.os.Bundle
 import android.text.InputFilter
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnFocusChangeListener
@@ -23,6 +22,7 @@ import au.cmcmarkets.ticker.utils.parseCurrency
 import au.cmcmarkets.ticker.utils.spanDecSmall
 import au.cmcmarkets.ticker.utils.to2Dec
 import au.cmcmarkets.ticker.utils.to2DecCurrency
+import au.cmcmarkets.ticker.utils.toast
 import dagger.android.support.DaggerFragment
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -80,8 +80,15 @@ class OrderTicketFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        restoreOrderTicket(savedInstanceState)
         setObserver()
         setListeners()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(ORDER_UNITS, binding.etUnits.text.toString())
+        outState.putString(ORDER_AMOUNT, binding.etAmount.text.toString())
     }
 
     private fun setListeners() {
@@ -119,6 +126,14 @@ class OrderTicketFragment : DaggerFragment() {
             setAmount()
             setUnits()
         }
+        viewModel.toastMsgLD.observe(viewLifecycleOwner) {
+            binding.root.context.toast(it.toString())
+        }
+    }
+
+    private fun restoreOrderTicket(savedInstanceState: Bundle?) {
+        binding.etUnits.setText(savedInstanceState?.getString(ORDER_UNITS))
+        binding.etAmount.setText(savedInstanceState?.getString(ORDER_AMOUNT))
     }
 
     private fun enableBtnConfirm(state: Boolean) {
@@ -137,11 +152,49 @@ class OrderTicketFragment : DaggerFragment() {
 
     }
 
+
+
+    private fun updateEditfields(buyRate: BigDecimal, checkField: EditText, setField: EditText): BigDecimal? {
+
+        if (buyRate == BigDecimal.ZERO) {
+            setField.setText("0")
+            return null
+        }
+
+        if (checkField.text.isNullOrBlank()) {
+            if (!setField.text.isNullOrBlank()) setField.setText("")
+            return null
+        }
+
+        val newInput = checkField.text.toString().parseCurrency()?.toBigDecimalOrNull()
+
+        if (newInput == null) {
+            setField.setText("")
+            return null
+        }
+
+        if (newInput == BigDecimal.ZERO) {
+            setField.setText("0")
+            return null
+        }
+
+        return newInput
+    }
+
+    private fun isInputValid(buyRate: BigDecimal, thisField: EditText, nextField: EditText, editType: EditType): Boolean {
+        val nextValue = updateEditfields(buyRate, nextField, thisField) ?: return false
+        val thisValue = when (editType) {
+            EditType.UNITS -> (nextValue.toDouble() / buyRate.toDouble()).to2Dec()
+            EditType.AMOUNT -> (nextValue.toDouble() * buyRate.toDouble()).to2Dec()
+        }
+        thisField.setText(thisValue)
+        return thisValue != "0"
+    }
+
     private fun setUnits() {
 
         if (!binding.etUnits.hasFocus()) {
-            enableBtnConfirm(viewModel
-                .isInputValid(
+            enableBtnConfirm(isInputValid(
                 buyRate,
                 binding.etUnits,
                 binding.etAmount,
@@ -152,8 +205,7 @@ class OrderTicketFragment : DaggerFragment() {
 
     private fun setAmount() {
         if (!binding.etAmount.hasFocus()) {
-            enableBtnConfirm(viewModel
-                .isInputValid(buyRate,
+            enableBtnConfirm(isInputValid(buyRate,
                     binding.etAmount,
                     binding.etUnits,
                     EditType.AMOUNT)
@@ -180,6 +232,11 @@ class OrderTicketFragment : DaggerFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val ORDER_UNITS = "OrderTicket_Units"
+        private const val ORDER_AMOUNT = "OrderTicket_Amount"
     }
 }
 
